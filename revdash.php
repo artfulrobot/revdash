@@ -159,14 +159,15 @@ function revdash_civicrm_themes(&$themes) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  */
-//function revdash_civicrm_navigationMenu(&$menu) {
-//  _revdash_civix_insert_navigation_menu($menu, 'Mailings', array(
-//    'label' => E::ts('New subliminal message'),
-//    'name' => 'mailing_subliminal_message',
-//    'url' => 'civicrm/mailing/subliminal',
-//    'permission' => 'access CiviMail',
-//    'operator' => 'OR',
-//    'separator' => 0,
-//  ));
-//  _revdash_civix_navigationMenu($menu);
-//}
+function revdash_civicrm_navigationMenu(&$menu) {
+  _revdash_civix_insert_navigation_menu($menu, 'Reports', array(
+    'label' => E::ts('Revenue Dashboard'),
+    'name' => 'revdash_1',
+    'url' => 'civicrm/revenuedashboard',
+    'permission' => 'access CiviContribute',
+    'operator' => 'OR',
+    'separator' => 0,
+    'icon' => 'crm-i fa-line-chart',
+  ));
+  _revdash_civix_navigationMenu($menu);
+}
