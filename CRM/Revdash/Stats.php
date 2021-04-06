@@ -853,10 +853,16 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
     $stats['ARR'] = 12 * $stats['MRR'];
 
     // Average Revenue Per User (donor)
-    $arpu =  $stats['ARR'] / $this->statx->getOutput('regularDonorCount');
-    // Lifetime Value
-    $stats['LTV'] = round($arpu / ($this->statx->getOutput('churnPercent') / 100));
-    $stats['LTV'] = round($arpu / ($this->statx->getOutput('annualChurnPercent') / 100));
+    $c = $this->statx->getOutput('regularDonorCount');
+    if ($c > 0) {
+      $arpu =  $stats['ARR'] / $this->statx->getOutput('regularDonorCount');
+      // Lifetime Value
+      // $stats['LTV'] = round($arpu / ($this->statx->getOutput('churnPercent') / 100));
+      $stats['LTV'] = round($arpu / ($this->statx->getOutput('annualChurnPercent') / 100));
+    }
+    else {
+      $stats['LTV'] = '';
+    }
     $stats['ARPU'] = round($arpu);
 
     $this->statx->setOutputs($stats);
