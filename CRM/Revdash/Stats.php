@@ -17,10 +17,10 @@ When parsing a date like Y-m-d H:i:s in Javascript,
  */
 
 class CRM_Revdash_Stats {
-  /** @var Civi Cache service (sql) */
+  /** @var CRM_Utils_Cache_Interface Civi Cache service (sql) */
   public $cacheService;
 
-  public function __construct($startDate = NULL, $endDate = NULL) {
+  public function __construct() {
     $this->cacheService = CRM_Utils_Cache::create(['type' => ['SqlGroup'], 'name' => 'revdash']);
   }
 
@@ -225,7 +225,7 @@ class Statx {
   public function __construct($params = []) {
     $this->params = $params;
 
-    // @todo hook to let others add defintions.
+    // @todo hook to let others add definitions.
 
     // Index the stats.
     foreach ($this->providers as $providerClass => $providerDetails) {
@@ -365,7 +365,7 @@ class StatXGeneric {
   }
 
   /**
-   * How many donors making non-regulr donations did we have in the period?
+   * How many donors making non-regular donations did we have in the period?
    */
   public function calcStatOneOffDonors() {
     $this->statx->setOutputs($this->basic(FALSE));
@@ -548,7 +548,7 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
   public function calcStatRegularRetentionMonthly() {
 
     if (!$this->startDate) {
-      throw BadMethodCallException("Need startDate for calcStatRegularRetentionMonthly");
+      throw new BadMethodCallException("Need startDate for calcStatRegularRetentionMonthly");
     }
     $referenceMonthStartDateTime = $this->startDateTime->modify('-1 month');
     $stats = $this->retentionRates($referenceMonthStartDateTime);
@@ -582,10 +582,10 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
   protected function retentionRates(DateTimeImmutable $referenceMonthStartDateTime) {
 
     if (!$this->startDate) {
-      throw BadMethodCallException("Need startDate for calcStatRegularRetentionAnnual");
+      throw new BadMethodCallException("Need startDate for calcStatRegularRetentionAnnual");
     }
     if (!$this->endDate) {
-      throw BadMethodCallException("Need endDate for calcStatRegularRetentionAnnual");
+      throw new BadMethodCallException("Need endDate for calcStatRegularRetentionAnnual");
     }
 
     $refMonthStart = $referenceMonthStartDateTime->format('YmdHis');
@@ -593,7 +593,7 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
     $refMonthEnd = $refMonthEndDateTime->format('YmdHis');
 
     // Number of people who gave regular donation in this month and the previous month
-    // divided by the number of people who also gave in the previous month. 0 - 100%
+    // divided by the number of people who gave in the previous month. 0 - 100%
     $sql = "
 WITH lastMonthsDonors AS (
 SELECT contact_id, net_amount
@@ -662,10 +662,10 @@ LEFT JOIN thisMonthsDonors ON lastMonthsDonors.contact_id = thisMonthsDonors.con
   public function recruitmentRate($period) {
 
     if (!$this->startDate) {
-      throw BadMethodCallException("Need startDate for calcStatRegularRecruitmentMonthly");
+      throw new BadMethodCallException("Need startDate for calcStatRegularRecruitmentMonthly");
     }
     if (!$this->endDate) {
-      throw BadMethodCallException("Need endDate for calcStatRegularRecruitmentMonthly");
+      throw new BadMethodCallException("Need endDate for calcStatRegularRecruitmentMonthly");
     }
 
     // Figure out the reference month.
@@ -909,3 +909,5 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
     return new DateTimeImmutable("$year-$m-$d");
   }
 }
+
+// cSpell:ignore timezones, Javascript's, Revdash, Statx, ARPU, getrevdashstats, datetimes, contribs
