@@ -522,20 +522,17 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
   public function calcStatRegularRetentionAnnual() {
 
     $referenceMonthStartDateTime = $this->startDateTime->modify('-1 year');
-    $stats = $this->retentionRates($referenceMonthStartDateTime);
+    $retentionData = $this->retentionRates($referenceMonthStartDateTime);
 
     $stats = [
-        'annualRetainedRegularDonorsCount'   => $stats['retainedCount'],
-        'annualRetainedRegularDonorsPercent' => $stats['retainedPercentage'],
-        'annualPreviousRegularDonorsCount'   => $stats['referenceDonorCount'],
-        'annualChurnAmount'                  => $stats['churnAmount'],
-        'annualChurnPercent'                 => '',
+        'annualRetainedRegularDonorsCount'   => $retentionData['retainedCount'],
+        'annualRetainedRegularDonorsPercent' => $retentionData['retainedPercentage'],
+        'annualPreviousRegularDonorsCount'   => $retentionData['referenceDonorCount'],
+        'annualChurnAmount'                  => $retentionData['churnAmount'],
+        'annualChurnPercent'                 => ($retentionData['referenceDonorCount'] > 0)
+        ? round(($retentionData['referenceDonorCount'] - $retentionData['retainedCount']) / $retentionData['referenceDonorCount'] * 100 , 1)
+        : '',
     ];
-    if ($stats['referenceDonorCount'] > 0) {
-      $stats['annualChurnPercent'] = round(
-          ($stats['referenceDonorCount'] - $stats['retainedCount']) / $stats['referenceDonorCount'] * 100
-          , 1);
-    }
 
     $this->statx->setOutputs($stats);
   }
@@ -556,16 +553,16 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
       throw new BadMethodCallException("Need startDate for calcStatRegularRetentionMonthly");
     }
     $referenceMonthStartDateTime = $this->startDateTime->modify('-1 month');
-    $stats = $this->retentionRates($referenceMonthStartDateTime);
+    $retentionData = $this->retentionRates($referenceMonthStartDateTime);
 
     $stats = [
-        'monthlyRetainedRegularDonorsCount'   => $stats['retainedCount'],
-        'monthlyRetainedRegularDonorsPercent' => $stats['retainedPercentage'],
-        'monthlyPreviousRegularDonorsCount'   => $stats['referenceDonorCount'],
-        'monthlyChurnAmount'                  => $stats['churnAmount'],
-        'churnPercent'                        => round(
-          ($stats['referenceDonorCount'] - $stats['retainedCount']) / $stats['referenceDonorCount'] * 100
-          , 1)
+        'monthlyRetainedRegularDonorsCount'   => $retentionData['retainedCount'],
+        'monthlyRetainedRegularDonorsPercent' => $retentionData['retainedPercentage'],
+        'monthlyPreviousRegularDonorsCount'   => $retentionData['referenceDonorCount'],
+        'monthlyChurnAmount'                  => $retentionData['churnAmount'],
+        'churnPercent'                        => ($retentionData['referenceDonorCount'] > 0)
+        ? round(($retentionData['referenceDonorCount'] - $retentionData['retainedCount']) / $retentionData['referenceDonorCount'] * 100 , 1)
+        : '',
     ];
     $this->statx->setOutputs($stats);
   }
