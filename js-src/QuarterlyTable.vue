@@ -1,5 +1,5 @@
 <template>
-  <table>
+  <table class="contains-bgbar">
     <thead>
       <tr>
         <th></th>
@@ -51,6 +51,7 @@
     </tbody>
   </table>
 </template>
+
 <script>
 import BgBarchart from './BgBarchart.vue';
 export default {

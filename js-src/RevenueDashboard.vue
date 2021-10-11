@@ -231,6 +231,18 @@ $strongBlue: #0162B7; //= hsl(208, 99%, 36%)
   position: relative;
   text-align: right;
 }
+.revenuedashboard table.contains-bgbar {
+  td, th {
+    padding: .8rem 1rem;
+  }
+  .bgbar .bar {
+    right: -1rem;
+    top: -0.8rem;
+    bottom: -0.8rem;
+    height: auto;
+  }
+}
+</style>
 
 .revenuedashboard ul.months {
   margin:0;
@@ -305,6 +317,7 @@ $strongBlue: #0162B7; //= hsl(208, 99%, 36%)
   height: 4rem;
   padding-top:2rem;
   margin-bottom: 2rem;
+  font-size: 1rem;
 }
 .revenuedashboard .ood>div {
   position: absolute;
