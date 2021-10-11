@@ -395,6 +395,7 @@ class StatXGeneric {
   AND is_test=0
   AND contribution_status_id = 1
   AND contribution_recur_id $isRecurringClause
+  AND currency = 'GBP'
 GROUP BY source WITH ROLLUP
       ";
 
@@ -466,6 +467,7 @@ WITH contribsWithDates AS (
   WHERE receive_date >= $dateSQL[lastYearStartSQL]
   AND is_test=0
   AND contribution_status_id = 1
+  AND currency = 'GBP'
 )
 
 SELECT fy, quarter, donorType, SUM(net_amount) DonorIncome
@@ -605,6 +607,7 @@ WHERE receive_date >= $refMonthStart AND receive_date <= $refMonthEnd
 AND contribution_recur_id IS NOT NULL
 AND contribution_status_id = 1
 AND is_test = 0
+AND currency = 'GBP'
 GROUP BY contact_id
 ),
 
@@ -615,6 +618,7 @@ WHERE receive_date >= $this->startDate AND receive_date <= $this->endDate
 AND contribution_recur_id IS NOT NULL
 AND contribution_status_id = 1
 AND is_test = 0
+AND currency = 'GBP'
 GROUP BY contact_id
 )
 
@@ -704,6 +708,7 @@ LEFT JOIN thisMonthsDonors ON lastMonthsDonors.contact_id = thisMonthsDonors.con
       AND contribution_recur_id IS NOT NULL
       AND is_test = 0
       AND contribution_status_id = 1
+      AND currency = 'GBP'
       GROUP BY contact_id
       ),
 
@@ -713,6 +718,7 @@ LEFT JOIN thisMonthsDonors ON lastMonthsDonors.contact_id = thisMonthsDonors.con
       WHERE receive_date >= $this->startDate AND receive_date <= $this->endDate
       AND contribution_recur_id IS NOT NULL
       AND is_test = 0
+      AND currency = 'GBP'
       AND contribution_status_id = 1
       AND NOT EXISTS (SELECT contact_id FROM lastMonthsDonors lm WHERE lm.contact_id = civicrm_contribution.contact_id)
       GROUP BY contact_id
@@ -760,6 +766,7 @@ WITH thisMonthsDonors AS (
   AND is_test=0
   AND contribution_status_id = 1
   AND contribution_recur_id IS NULL
+  AND currency = 'GBP'
   GROUP BY contact_id
 ),
 previousGiving AS (
@@ -770,6 +777,7 @@ previousGiving AS (
   WHERE receive_date < $this->startDate
   AND is_test=0
   AND contribution_status_id = 1
+  AND currency = 'GBP'
   GROUP BY contact_id
 )
 
@@ -815,6 +823,7 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
       WHERE receive_date >= $startOfYear
       AND is_test=0
       AND contribution_status_id = 1
+      AND currency = 'GBP'
       AND contribution_recur_id IS NULL
     ";
 
@@ -833,6 +842,7 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
       FROM civicrm_contribution cc
       WHERE receive_date >= $this->endDate - INTERVAL 1 YEAR
           AND receive_date <= $this->endDate
+      AND currency = 'GBP'
       AND is_test=0
       AND contribution_status_id = 1
     ";
@@ -889,6 +899,7 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
       AND is_test=0
       AND contribution_status_id = 1
       AND contribution_recur_id IS NULL
+      AND currency = 'GBP'
       GROUP BY contactCountries.country
       ORDER BY COUNT(*) DESC
       LIMIT 10
