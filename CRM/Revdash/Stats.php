@@ -261,7 +261,6 @@ class Statx {
    * Recursively get stats
    *
    * @var array $stats stat names
-   * @var array $list (used internally)
    *
    * @return Statx
    */
@@ -528,10 +527,14 @@ GROUP BY fy, quarter, donorType WITH ROLLUP
         'annualRetainedRegularDonorsPercent' => $stats['retainedPercentage'],
         'annualPreviousRegularDonorsCount'   => $stats['referenceDonorCount'],
         'annualChurnAmount'                  => $stats['churnAmount'],
-        'annualChurnPercent'                 => round(
-          ($stats['referenceDonorCount'] - $stats['retainedCount']) / $stats['referenceDonorCount'] * 100
-          , 1)
+        'annualChurnPercent'                 => '',
     ];
+    if ($stats['referenceDonorCount'] > 0) {
+      $stats['annualChurnPercent'] = round(
+          ($stats['referenceDonorCount'] - $stats['retainedCount']) / $stats['referenceDonorCount'] * 100
+          , 1);
+    }
+
     $this->statx->setOutputs($stats);
   }
 
@@ -855,10 +858,11 @@ LEFT JOIN previousGiving ON thisMonthsDonors.contact_id = previousGiving.contact
     // Average Revenue Per User (donor)
     $c = $this->statx->getOutput('regularDonorCount');
     if ($c > 0) {
-      $arpu =  $stats['ARR'] / $this->statx->getOutput('regularDonorCount');
+      $arpu =  $stats['ARR'] / $c;
       // Lifetime Value
       // $stats['LTV'] = round($arpu / ($this->statx->getOutput('churnPercent') / 100));
-      $stats['LTV'] = round($arpu / ($this->statx->getOutput('annualChurnPercent') / 100));
+      $c = $this->statx->getOutput('annualChurnPercent');
+      $stats['LTV'] = ($c <> 0) ? round($arpu / ($this->statx->getOutput('annualChurnPercent') / 100)) : '';
     }
     else {
       $stats['LTV'] = '';
