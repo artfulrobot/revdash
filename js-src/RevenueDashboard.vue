@@ -242,7 +242,6 @@ $strongBlue: #0162B7; //= hsl(208, 99%, 36%)
     height: auto;
   }
 }
-</style>
 
 .revenuedashboard ul.months {
   margin:0;
